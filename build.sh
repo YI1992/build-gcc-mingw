@@ -17,8 +17,8 @@ MPC_SHA256=91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931
 ISL_VERSION=0.28
 ISL_SHA256=3dc31b8e1b18329e42d5dfbf84dd55e15c59b61569a2ab246f61497d9592f727
 
-EXPAT_VERSION=2.8.2
-EXPAT_SHA256=3ad89b8588e6644bd4e49981480d48b21289eebbcd4f0a1a4afb1c29f99b6ab4
+EXPAT_VERSION=2.10.0
+EXPAT_SHA256=c624ba2998fc65df1163a49641ff3f9ab73138b11641d92c86bee0fb01b1bc7f
 
 BINUTILS_VERSION=2.47
 BINUTILS_SHA256=154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff
@@ -29,8 +29,8 @@ GCC_SHA256=e6738e29597f733270731aa90600f37ffdc045079dfc27ec7e8192cc81085c3e
 MINGW_VERSION=14.0.0
 MINGW_SHA256=6eaf921d9eb987d3820b364ea9775bc19b965ec81490b6fdd716526c28e1995c
 
-GDB_VERSION=17.2
-GDB_SHA256=1c036c0d72e4b3d1fb5c94c88632add6f9d76f4d7c4d2ea793c12a9f19a3228c
+GDB_VERSION=18.1
+GDB_SHA256=cd9fc3fe2b47743840e42c1592d3d87f8302eb18639c0b8b4ba0898002e2348f
 
 MAKE_VERSION=4.4.1
 MAKE_SHA256=dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3
@@ -153,7 +153,7 @@ ${SOURCE}/gcc-${GCC_VERSION}/configure \
   --disable-libgomp                    \
   --enable-tls                         \
   --enable-languages=c,c++             \
-  --enable-threads=win32               \
+  --enable-threads=posix               \
   --enable-checking=release            \
   --enable-large-address-aware         \
   --enable-libstdcxx-threads           \
@@ -327,7 +327,7 @@ ${SOURCE}/gcc-${GCC_VERSION}/configure \
   --enable-tls                         \
   --enable-languages=c,c++,lto         \
   --enable-libgomp                     \
-  --enable-threads=win32               \
+  --enable-threads=posix               \
   --enable-checking=release            \
   --enable-mingw-wildcard              \
   --enable-large-address-aware         \
@@ -374,6 +374,7 @@ mkdir -p ${BUILD}/make && pushd ${BUILD}/make
 ${SOURCE}/make-${MAKE_VERSION}/configure \
   --prefix=${FINAL}                      \
   --host=${TARGET}                       \
+  --program-prefix=mingw32-              \
   --disable-nls                          \
   --disable-rpath                        \
   --enable-case-insensitive-file-system  \
