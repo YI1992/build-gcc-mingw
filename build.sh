@@ -51,12 +51,12 @@ if [ "${ARCH}" == "i686" ]; then
   EXTRA_GCC_ARGS="--disable-sjlj-exceptions --with-dwarf2"
 elif [ "${ARCH}" == "x86_64" ]; then
   EXTRA_CRT_ARGS="${EXTRA_CRT_ARGS} --disable-lib32"
-  EXTRA_GCC_ARGS=
+  EXTRA_GCC_ARGS="--exceptions=seh"
 else
   exit 1
 fi
 
-NAME=gcc-v${GCC_VERSION}-mingw-v${MINGW_VERSION}-${CRT}-${ARCH}
+NAME=${ARCH}-${GCC_VERSION}-${MINGW_VERSION}-posix-seh-${CRT}
 TARGET=${ARCH}-w64-mingw32
 
 function get()
@@ -401,4 +401,7 @@ if [[ -v GITHUB_OUTPUT ]]; then
   echo "MINGW_VERSION=${MINGW_VERSION}" >>${GITHUB_OUTPUT}
   echo "GDB_VERSION=${GDB_VERSION}"     >>${GITHUB_OUTPUT}
   echo "MAKE_VERSION=${MAKE_VERSION}"   >>${GITHUB_OUTPUT}
+  echo "BINUTILS_VERSION=${BINUTILS_VERSION}"   >>${GITHUB_OUTPUT}
+  echo "EXPAT_VERSION=${EXPAT_VERSION}"   >>${GITHUB_OUTPUT}
+  echo "ZSTD_VERSION=${ZSTD_VERSION}"   >>${GITHUB_OUTPUT}
 fi
