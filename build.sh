@@ -56,7 +56,7 @@ else
   exit 1
 fi
 
-NAME=${ARCH}-${GCC_VERSION}-${MINGW_VERSION}-posix-seh-${CRT}
+NAME=gcc-v${GCC_VERSION}-mingw-v${MINGW_VERSION}-${CRT}-${ARCH}
 TARGET=${ARCH}-w64-mingw32
 
 function get()
