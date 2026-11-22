@@ -51,7 +51,7 @@ if [ "${ARCH}" == "i686" ]; then
   EXTRA_GCC_ARGS="--disable-sjlj-exceptions --with-dwarf2"
 elif [ "${ARCH}" == "x86_64" ]; then
   EXTRA_CRT_ARGS="${EXTRA_CRT_ARGS} --disable-lib32"
-  EXTRA_GCC_ARGS="--exceptions=seh"
+  EXTRA_GCC_ARGS="--enable-seh-exceptions"
 else
   exit 1
 fi
