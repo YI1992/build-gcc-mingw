@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-26.04
     strategy:
       matrix:
-        arch: x86_64
-        crt: ucrt
+        arch: [i686, x86_64]
+        crt: [msvcrt, ucrt]
 
     outputs:
       GCC_VERSION: ${{ steps.build.outputs.GCC_VERSION }}
