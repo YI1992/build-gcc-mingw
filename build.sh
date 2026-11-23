@@ -411,7 +411,7 @@ make install
 popd
 
 mkdir -p ${BUILD}/cmake && pushd ${BUILD}/cmake
-${SOURCE}/cmake-${MAKE_VERSION}/bootstrap \
+${SOURCE}/cmake-${CMAKE_VERSION}/bootstrap \
   --prefix=${FINAL}                      \
   --host=${TARGET}                       \
   --bindir=bin                           \
