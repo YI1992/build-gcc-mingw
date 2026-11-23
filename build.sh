@@ -411,18 +411,18 @@ make install
 popd
 
 mkdir -p ${BUILD}/cmake && pushd ${BUILD}/cmake
-cmake ${SOURCE}/cmake-${CMAKE_VERSION}          \
-  -G "Unix Makefiles"                           \
-  -DCMAKE_BUILD_TYPE=Release                    \
-  -DCMAKE_SYSTEM_NAME=Windows                   \
-  -DCMAKE_INSTALL_PREFIX=${FINAL}               \
-  -DCMAKE_DATA_DIR=share/cmake-4.5              \
-  -DCMAKE_DOC_DIR=share/cmake-4.5/doc           \
-  -DCMAKE_MAN_DIR=share/cmake-4.5/man           \
-  -DCMAKE_INFO_DIR=share/cmake-4.5/info         \
-  -DCMAKE_C_COMPILER=${TARGET}-gcc              \
-  -DCMAKE_CXX_COMPILER=${TARGET}-g++            \
-  -DCMAKE_RC_COMPILER=${TARGET}-windres         \
+cmake ${SOURCE}/cmake-${CMAKE_VERSION}           \
+  -G "Unix Makefiles"                            \
+  -DCMAKE_BUILD_TYPE=Release                     \
+  -DCMAKE_SYSTEM_NAME=Windows                    \
+  -DCMAKE_INSTALL_PREFIX=${FINAL}                \
+  -DCMAKE_DATA_DIR=share/cmake-4.5               \
+  -DCMAKE_DOC_DIR=share/cmake-4.5/doc            \
+  -DCMAKE_MAN_DIR=share/cmake-4.5/man            \
+  -DCMAKE_INFO_DIR=share/cmake-4.5/info          \
+  -DCMAKE_C_COMPILER=${TARGET}-gcc               \
+  -DCMAKE_CXX_COMPILER=${TARGET}-g++             \
+  -DCMAKE_RC_COMPILER=${TARGET}-windres          \
   -DBUILD_TESTING=OFF
 make -j`nproc`
 make install
@@ -441,10 +441,10 @@ make -j`nproc`
 make install
 popd
 
-rm -rf ${FINAL}/bin/${TARGET}-*
+#rm -rf ${FINAL}/bin/${TARGET}-*
 rm -rf ${FINAL}/bin/ld.bfd.exe ${FINAL}/${TARGET}/bin/ld.bfd.exe
 rm -rf ${FINAL}/lib/bfd-plugins/libdep.dll.a
-rm -rf ${FINAL}/share
+#rm -rf ${FINAL}/share
 
 find ${FINAL} -name '*.exe' -print0 | xargs -0 -n 8 -P 2 ${TARGET}-strip --strip-unneeded
 find ${FINAL} -name '*.dll' -print0 | xargs -0 -n 8 -P 2 ${TARGET}-strip --strip-unneeded
