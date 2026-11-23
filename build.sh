@@ -35,6 +35,12 @@ GDB_SHA256=cd9fc3fe2b47743840e42c1592d3d87f8302eb18639c0b8b4ba0898002e2348f
 MAKE_VERSION=4.4.1
 MAKE_SHA256=dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3
 
+CMAKE_VERSION=4.5.1
+CMAKE_SHA256=a79bf33cbe05686fdf79c2bbbcfe5e8e62ad16d3d540fa737cbedfeed41fb69e
+
+NINJA_VERSION=1.13.2
+NINJA_SHA256=974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17
+
 ARCH=${1:-x86_64}
 CRT=${2:-ucrt}
 
@@ -115,6 +121,10 @@ get https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release
 get https://ftp.gnu.org/gnu/gdb/gdb-${GDB_VERSION}.tar.xz                                                            ${GDB_SHA256}
 get https://ftp.gnu.org/gnu/make/make-${MAKE_VERSION}.tar.gz                                                         ${MAKE_SHA256}
 
+get https://github.com/Kitware/CMake/releases/download/v4.5.1/cmake-${CMAKE_VERSION}.tar.gz                                                         ${CMAKE_SHA256}
+
+get https://github.com/ninja-build/ninja/archive/refs/tags/v${NINJA_VERSION}.tar.gz                                                         ${NINJA_SHA256}
+
 mkdir -p ${BUILD}/x-binutils && pushd ${BUILD}/x-binutils
 ${SOURCE}/binutils-${BINUTILS_VERSION}/configure \
   --prefix=${BOOTSTRAP}                          \
@@ -124,7 +134,8 @@ ${SOURCE}/binutils-${BINUTILS_VERSION}/configure \
   --disable-nls                                  \
   --disable-shared                               \
   --disable-multilib                             \
-  --disable-werror
+  --disable-werror                               \
+  --quiet
 make -j`nproc`
 make install
 popd
@@ -133,6 +144,7 @@ mkdir -p ${BUILD}/x-mingw-w64-headers && pushd ${BUILD}/x-mingw-w64-headers
 ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
   --prefix=${BOOTSTRAP}                                           \
   --host=${TARGET}                                                \
+  --enable-silent-rules                                           \
   ${EXTRA_CRT_ARGS}
 make -j`nproc`
 make install
@@ -159,6 +171,7 @@ ${SOURCE}/gcc-${GCC_VERSION}/configure \
   --enable-libstdcxx-threads           \
   --disable-libstdcxx-pch              \
   --disable-libstdcxx-verbose          \
+  --quiet                              \
   ${EXTRA_GCC_ARGS}
 make -j`nproc` all-gcc
 make install-gcc
@@ -173,6 +186,7 @@ ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-crt/configure \
   --host=${TARGET}                                            \
   --disable-dependency-tracking                               \
   --enable-warnings=0                                         \
+  --enable-silent-rules                                       \
   ${EXTRA_CRT_ARGS}
 make -j`nproc`
 make install
@@ -180,12 +194,13 @@ popd
 
 mkdir -p ${BUILD}/x-mingw-w64-winpthreads && pushd ${BUILD}/x-mingw-w64-winpthreads
 ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-libraries/winpthreads/configure \
-  --prefix=${BOOTSTRAP}                                                         \
-  --with-sysroot=${BOOTSTRAP}                                                   \
-  --host=${TARGET}                                                              \
-  --disable-dependency-tracking                                                 \
-  --enable-static                                                               \
-  --disable-shared                                                              \
+  --prefix=${BOOTSTRAP}                    \
+  --with-sysroot=${BOOTSTRAP}              \
+  --host=${TARGET}                         \
+  --disable-dependency-tracking            \
+  --enable-static                          \
+  --disable-shared                         \
+  --enable-silent-rules                    \
   ${EXTRA_CRT_ARGS}
 make -j`nproc`
 make install
@@ -222,6 +237,7 @@ ${SOURCE}/gmp-${GMP_VERSION}/configure \
   --enable-static                      \
   --enable-fat                         \
   CC=${TARGET}-gcc                     \
+  --enable-silent-rules                \
   CFLAGS="-O2 -std=gnu17"
 make -j`nproc`
 make install
@@ -233,6 +249,7 @@ ${SOURCE}/mpfr-${MPFR_VERSION}/configure \
   --host=${TARGET}                       \
   --disable-shared                       \
   --enable-static                        \
+  --enable-silent-rules                  \
   --with-gmp-build=${BUILD}/gmp
 make -j`nproc`
 make install
@@ -244,6 +261,7 @@ ${SOURCE}/mpc-${MPC_VERSION}/configure \
   --host=${TARGET}                     \
   --disable-shared                     \
   --enable-static                      \
+  --enable-silent-rules                \
   --with-{gmp,mpfr}=${PREFIX}
 make -j`nproc`
 make install
@@ -255,6 +273,7 @@ ${SOURCE}/isl-${ISL_VERSION}/configure \
   --host=${TARGET}                     \
   --disable-shared                     \
   --enable-static                      \
+  --enable-silent-rules                \
   --with-gmp-prefix=${PREFIX}
 make -j`nproc`
 make install
@@ -267,7 +286,8 @@ ${SOURCE}/expat-${EXPAT_VERSION}/configure \
   --disable-shared                         \
   --enable-static                          \
   --without-examples                       \
-  --without-tests
+  --without-tests                          \
+  --enable-silent-rules
 make -j`nproc`
 make install
 popd
@@ -284,7 +304,8 @@ ${SOURCE}/binutils-${BINUTILS_VERSION}/configure \
   --disable-nls                                  \
   --disable-multilib                             \
   --disable-werror                               \
-  --with-{gmp,mpfr,mpc,isl}=${PREFIX}
+  --with-{gmp,mpfr,mpc,isl}=${PREFIX}            \
+  --quiet
 make -j`nproc`
 make install
 popd
@@ -293,6 +314,7 @@ mkdir -p ${BUILD}/mingw-w64-headers && pushd ${BUILD}/mingw-w64-headers
 ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-headers/configure \
   --prefix=${FINAL}/${TARGET}                                     \
   --host=${TARGET}                                                \
+  --enable-silent-rules                                           \
   ${EXTRA_CRT_ARGS}
 make -j`nproc`
 make install
@@ -306,6 +328,7 @@ ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-crt/configure \
   --host=${TARGET}                                            \
   --disable-dependency-tracking                               \
   --enable-warnings=0                                         \
+  --enable-silent-rules                                       \
   ${EXTRA_CRT_ARGS}
 make -j`nproc`
 make install
@@ -336,6 +359,7 @@ ${SOURCE}/gcc-${GCC_VERSION}/configure \
   --disable-libstdcxx-verbose          \
   --disable-win32-registry             \
   --with-tune=intel                    \
+  --quiet                              \
   ${EXTRA_GCC_ARGS}                    \
   --with-{gmp,mpfr,mpc,isl,zstd}=${PREFIX}
 make -j`nproc`
@@ -344,12 +368,13 @@ popd
 
 mkdir -p ${BUILD}/mingw-w64-winpthreads && pushd ${BUILD}/mingw-w64-winpthreads
 ${SOURCE}/mingw-w64-v${MINGW_VERSION}/mingw-w64-libraries/winpthreads/configure \
-  --prefix=${FINAL}/${TARGET}                                                   \
-  --with-sysroot=${FINAL}/${TARGET}                                             \
-  --host=${TARGET}                                                              \
-  --disable-dependency-tracking                                                 \
-  --disable-shared                                                              \
-  --enable-static
+  --prefix=${FINAL}/${TARGET}              \
+  --with-sysroot=${FINAL}/${TARGET}        \
+  --host=${TARGET}                         \
+  --disable-dependency-tracking            \
+  --disable-shared                         \
+  --enable-static                          \
+  --enable-silent-rules
 make -j`nproc`
 make install
 popd
@@ -364,6 +389,7 @@ ${SOURCE}/gdb-${GDB_VERSION}/configure     \
   --with-static-standard-libraries         \
   --with-libexpat-prefix=${PREFIX}         \
   --with-{gmp,mpfr,mpc,isl,zstd}=${PREFIX} \
+  --quiet                                  \
   CFLAGS="-O2 -std=gnu17"                  \
   CXXFLAGS="-O2 -D_WIN32_WINNT=0x0600"
 make -j`nproc`
@@ -378,7 +404,34 @@ ${SOURCE}/make-${MAKE_VERSION}/configure \
   --disable-nls                          \
   --disable-rpath                        \
   --enable-case-insensitive-file-system  \
+  --enable-silent-rules                  \
   CFLAGS="-O2 -std=gnu17"
+make -j`nproc`
+make install
+popd
+
+mkdir -p ${BUILD}/cmake && pushd ${BUILD}/cmake
+${SOURCE}/cmake-${MAKE_VERSION}/bootstrap \
+  --prefix=${FINAL}                      \
+  --host=${TARGET}                       \
+  --bindir=bin                           \
+  --datadir=share/cmake-4.5              \
+  --docdir=share/cmake-4.5/doc           \
+  --mandir=share/cmake-4.5/man           \
+  --xdgdatadir=share/cmake-4.5
+make -j`nproc`
+make install
+popd
+
+mkdir -p ${BUILD}/ninja && pushd ${BUILD}/ninja
+cmake -B ${SOURCE}/ninja-${ninja_VERSION}       \
+  -G "Unix Makefiles"                           \
+  -DCMAKE_BUILD_TYPE=Release                    \
+  -DCMAKE_SYSTEM_NAME=Windows                   \
+  -DCMAKE_INSTALL_PREFIX=${FINAL}               \
+#  -DCMAKE_C_COMPILER=${TARGET}-gcc               \
+#  -DCMAKE_CXX_COMPILER=${TARGET}-g++             \
+  -DBUILD_TESTING=OFF
 make -j`nproc`
 make install
 popd
@@ -397,11 +450,8 @@ rm ${FINAL}/mingw
 7zr a -mx9 -mqs=on -mmt=on ${OUTPUT}/${NAME}.7z ${FINAL}
 
 if [[ -v GITHUB_OUTPUT ]]; then
-  echo "GCC_VERSION=${GCC_VERSION}"     >>${GITHUB_OUTPUT}
-  echo "MINGW_VERSION=${MINGW_VERSION}" >>${GITHUB_OUTPUT}
-  echo "GDB_VERSION=${GDB_VERSION}"     >>${GITHUB_OUTPUT}
-  echo "MAKE_VERSION=${MAKE_VERSION}"   >>${GITHUB_OUTPUT}
+  echo "GCC_VERSION=${GCC_VERSION}"             >>${GITHUB_OUTPUT}
+  echo "MINGW_VERSION=${MINGW_VERSION}"         >>${GITHUB_OUTPUT}
+  echo "GDB_VERSION=${GDB_VERSION}"             >>${GITHUB_OUTPUT}
   echo "BINUTILS_VERSION=${BINUTILS_VERSION}"   >>${GITHUB_OUTPUT}
-  echo "EXPAT_VERSION=${EXPAT_VERSION}"   >>${GITHUB_OUTPUT}
-  echo "ZSTD_VERSION=${ZSTD_VERSION}"   >>${GITHUB_OUTPUT}
 fi
