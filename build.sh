@@ -413,7 +413,6 @@ popd
 mkdir -p ${BUILD}/cmake && pushd ${BUILD}/cmake
 ${SOURCE}/cmake-${CMAKE_VERSION}/bootstrap \
   --prefix=${FINAL}                      \
-  --host=${TARGET}                       \
   --bindir=bin                           \
   --datadir=share/cmake-4.5              \
   --docdir=share/cmake-4.5/doc           \
