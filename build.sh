@@ -411,13 +411,19 @@ make install
 popd
 
 mkdir -p ${BUILD}/cmake && pushd ${BUILD}/cmake
-${SOURCE}/cmake-${CMAKE_VERSION}/bootstrap \
-  --prefix=${FINAL}                      \
-  --bindir=bin                           \
-  --datadir=share/cmake-4.5              \
-  --docdir=share/cmake-4.5/doc           \
-  --mandir=share/cmake-4.5/man           \
-  --xdgdatadir=share/cmake-4.5
+cmake ${SOURCE}/cmake-${CMAKE_VERSION}          \
+  -G "Unix Makefiles"                           \
+  -DCMAKE_BUILD_TYPE=Release                    \
+  -DCMAKE_SYSTEM_NAME=Windows                   \
+  -DCMAKE_INSTALL_PREFIX=${FINAL}               \
+  -DCMAKE_DATA_DIR=share/cmake-4.5              \
+  -DCMAKE_DOC_DIR=share/cmake-4.5/doc           \
+  -DCMAKE_MAN_DIR=share/cmake-4.5/man           \
+  -DCMAKE_INFO_DIR=share/cmake-4.5/info         \
+  -DCMAKE_C_COMPILER=${TARGET}-gcc              \
+  -DCMAKE_CXX_COMPILER=${TARGET}-g++            \
+  -DCMAKE_RC_COMPILER=${TARGET}-windres         \
+  -DBUILD_TESTING=OFF
 make -j`nproc`
 make install
 popd
@@ -428,8 +434,8 @@ cmake ${SOURCE}/ninja-${NINJA_VERSION}          \
   -DCMAKE_BUILD_TYPE=Release                    \
   -DCMAKE_SYSTEM_NAME=Windows                   \
   -DCMAKE_INSTALL_PREFIX=${FINAL}               \
-#  -DCMAKE_C_COMPILER=${TARGET}-gcc               \
-#  -DCMAKE_CXX_COMPILER=${TARGET}-g++             \
+  -DCMAKE_C_COMPILER=${TARGET}-gcc              \
+  -DCMAKE_CXX_COMPILER=${TARGET}-g++            \
   -DBUILD_TESTING=OFF
 make -j`nproc`
 make install
