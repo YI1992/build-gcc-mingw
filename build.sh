@@ -423,7 +423,7 @@ make install
 popd
 
 mkdir -p ${BUILD}/ninja && pushd ${BUILD}/ninja
-cmake -B ${SOURCE}/ninja-${ninja_VERSION}       \
+cmake -B ${SOURCE}/ninja-${NINJA_VERSION}       \
   -G "Unix Makefiles"                           \
   -DCMAKE_BUILD_TYPE=Release                    \
   -DCMAKE_SYSTEM_NAME=Windows                   \
