@@ -51,8 +51,8 @@ jobs:
       - name: upload artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.arch }}-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}
-          path: ${{ matrix.arch }}-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}.7z
+          name: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt
+          path: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt.7z
           if-no-files-found: error
           compression-level: 0
 
@@ -71,13 +71,13 @@ jobs:
           echo 'MinGW-w64 v${{ needs.build.outputs.MINGW_VERSION }}' >>notes.txt
           echo 'GDB v${{ needs.build.outputs.GDB_VERSION }}'         >>notes.txt
           echo 'Make v${{ needs.build.outputs.MAKE_VERSION }}'       >>notes.txt
-          gh release create ${{ matrix.arch }}-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }} -R "${GITHUB_REPOSITORY}" -t '${{ matrix.arch }}-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}' -F notes.txt
+          gh release create x86_64-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-ucrt -R "${GITHUB_REPOSITORY}" -t 'x86_64-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-ucrt' -F notes.txt
 
       - name: get artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: ${{ matrix.arch }}-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}-*
+          pattern: x86_64-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-ucrt
           merge-multiple: true
 
       - name: upload artifacts
-        run: gh release upload '${{ matrix.arch }}-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}' ${{ matrix.arch }}-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-${{ matrix.crt }}-*.7z -R "${GITHUB_REPOSITORY}"
+        run: gh release upload 'x86_64-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-ucrt' x86_64-${{ needs.build.outputs.GCC_VERSION }}-${{ needs.build.outputs.MINGW_VERSION }}-posix-seh-ucrt.7z -R "${GITHUB_REPOSITORY}"
