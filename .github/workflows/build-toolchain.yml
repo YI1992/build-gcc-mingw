@@ -10,7 +10,7 @@ on:
       tag:
         description: "release tag"
         required: true
-        trpe: string
+        type: string
 
 permissions:
   contents: write
@@ -56,14 +56,6 @@ jobs:
       - name: build
         id: build
         run: ./build.sh ${{ matrix.arch }} ${{ matrix.crt }}
-
-      - name: upload artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt
-          path: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt.7z
-          if-no-files-found: error
-          compression-level: 0
 
       - name: Make Release
         uses: softprops/action-gh-release@v2
