@@ -389,7 +389,7 @@ ${SOURCE}/gdb-${GDB_VERSION}/configure     \
   --with-libexpat-prefix=${PREFIX}         \
   --with-{gmp,mpfr,mpc,isl,zstd}=${PREFIX} \
   --quiet                                  \
-  CFLAGS="-O2 -std=gnu17"                  \
+#  CFLAGS="-O2 -std=gnu17"                  \
   CXXFLAGS="-O2 -D_WIN32_WINNT=0x0600"
 make -j`nproc`
 cp gdb/.libs/gdb.exe gdbserver/gdbserver.exe ${FINAL}/bin/
