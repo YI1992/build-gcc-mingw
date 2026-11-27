@@ -1,0 +1,75 @@
+
+name: build-toolchain
+
+on:
+  push:
+    tags:
+      - "x86_64-*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "release tag"
+        required: true
+        trpe: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    strategy:
+      matrix:
+        arch: [x86_64]
+        crt: [ucrt]
+
+    outputs:
+      GCC_VERSION: ${{ steps.build.outputs.GCC_VERSION }}
+      MINGW_VERSION: ${{ steps.build.outputs.MINGW_VERSION }}
+      GDB_VERSION: ${{ steps.build.outputs.GDB_VERSION }}
+      MAKE_VERSION: ${{ steps.build.outputs.MAKE_VERSION }}
+
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: install dependencies
+        run: |
+          sudo apt-get install --no-install-recommends -y \
+            ca-certificates \
+            libgmp-dev      \
+            libmpc-dev      \
+            libmpfr-dev     \
+            libisl-dev      \
+            xz-utils        \
+            texinfo         \
+            patch           \
+            p7zip           \
+            cmake           \
+            make            \
+            curl            \
+            m4              \
+            gcc             \
+            g++
+
+      - name: build
+        id: build
+        run: ./build.sh ${{ matrix.arch }} ${{ matrix.crt }}
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt
+          path: x86_64-${{ steps.build.outputs.GCC_VERSION }}-${{ steps.build.outputs.MINGW_VERSION }}-posix-seh-ucrt.7z
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Make Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          draft: true
+          prefelease:false
+          files: |
+            *.7z
