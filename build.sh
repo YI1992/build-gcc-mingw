@@ -121,9 +121,8 @@ get https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release
 get https://ftp.gnu.org/gnu/gdb/gdb-${GDB_VERSION}.tar.xz                                                            ${GDB_SHA256}
 get https://ftp.gnu.org/gnu/make/make-${MAKE_VERSION}.tar.gz                                                         ${MAKE_SHA256}
 
-get https://github.com/Kitware/CMake/releases/download/v4.5.1/cmake-${CMAKE_VERSION}.tar.gz                                                         ${CMAKE_SHA256}
-
-get https://github.com/ninja-build/ninja/archive/refs/tags/v${NINJA_VERSION}.tar.gz                                                         ${NINJA_SHA256}
+get https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz               ${CMAKE_SHA256}
+get https://github.com/ninja-build/ninja/archive/refs/tags/v${NINJA_VERSION}.tar.gz                                  ${NINJA_SHA256}
 
 mkdir -p ${BUILD}/x-binutils && pushd ${BUILD}/x-binutils
 ${SOURCE}/binutils-${BINUTILS_VERSION}/configure \
@@ -423,6 +422,8 @@ cmake ${SOURCE}/cmake-${CMAKE_VERSION}           \
   -DCMAKE_C_COMPILER=${TARGET}-gcc               \
   -DCMAKE_CXX_COMPILER=${TARGET}-g++             \
   -DCMAKE_RC_COMPILER=${TARGET}-windres          \
+  -DCMAKE_BOOTSTRAP=ON                           \
+  -DCMake_BUILD_LTO=ON                           \
   -DBUILD_TESTING=OFF
 make -j`nproc`
 make install
